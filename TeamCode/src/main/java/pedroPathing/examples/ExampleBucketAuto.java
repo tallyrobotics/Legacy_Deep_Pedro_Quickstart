@@ -8,6 +8,8 @@ import com.pedropathing.pathgen.Path;
 import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
+import com.pedropathing.util.DashboardPoseTracker;
+import com.pedropathing.util.Drawing;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -29,6 +31,7 @@ import pedroPathing.constants.LConstants;
 public class ExampleBucketAuto extends OpMode {
 
     private Follower follower;
+    private DashboardPoseTracker dashboardPoseTracker;
     private Timer pathTimer, actionTimer, opmodeTimer;
 
     /** This is the variable where we store the state of our auto.
@@ -248,6 +251,7 @@ public class ExampleBucketAuto extends OpMode {
 
         // These loop the movements of the robot
         follower.update();
+        dashboardPoseTracker.update();
         autonomousPathUpdate();
 
         // Feedback to Driver Hub
@@ -256,6 +260,10 @@ public class ExampleBucketAuto extends OpMode {
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.update();
+
+        Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
+        Drawing.drawRobot(follower.poseUpdater.getPose(), "#4CAF50");
+        Drawing.sendPacket();
     }
 
     /** This method is called once at the init of the OpMode. **/
@@ -268,12 +276,23 @@ public class ExampleBucketAuto extends OpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
+        follower.setMaxPower(0.42);
+        follower.update();
+
+        dashboardPoseTracker = new DashboardPoseTracker(follower.poseUpdater);
+        Drawing.drawRobot(follower.poseUpdater.getPose(), "#4CAF50");
+        Drawing.sendPacket();
+
         buildPaths();
     }
 
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
-    public void init_loop() {}
+    public void init_loop()
+    {
+        Drawing.drawRobot(follower.getPose(), "#4CAF50");
+        Drawing.sendPacket();
+    }
 
     /** This method is called once at the start of the OpMode.
      * It runs all the setup actions, including building paths and starting the path system **/
