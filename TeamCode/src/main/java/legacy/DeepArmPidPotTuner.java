@@ -45,12 +45,11 @@ import com.arcrobotics.ftclib.controller.PIDController;
 public class DeepArmPidPotTuner extends LinearOpMode {
 
     private PIDController controller;
-    public static double p = 0.0025, i = 0, d = 0.0001;
+    public static double p = 0.008, i = 0, d = 0.0001;
     public static double f = 0.005;
-    public static double powerCap = 0.5;
+    public static double powerCap = 0.75;
 
     public static double target = 150;
-
     private final double volts_in_degree = 1.22;
 
     private AnalogInput potentiometer;
@@ -67,10 +66,15 @@ public class DeepArmPidPotTuner extends LinearOpMode {
     private int correctCount = 0;
     private boolean powerMode = false;
     private boolean pidMode = false;
+    private boolean holdMode = true;
+    private boolean startOfHold = true;
+
+    private double controllerPower = 0;
+    private double power;
+    private int holdEncoder;
 
     @Override
     public void runOpMode() {
-
         controller = new PIDController(p,i,d);
 
         potentiometer = hardwareMap.analogInput.get("pot");
@@ -101,19 +105,23 @@ public class DeepArmPidPotTuner extends LinearOpMode {
 
             if (gamepad2.a)
             {
-                target = 250;
+                target = 119.2;
+                pidMode = true;
             }
             if (gamepad2.y)
             {
-                target = 190;
+                target = 187.4;
+                pidMode = true;
             }
             if (gamepad2.b)
             {
-                target = 153;
+                target = 290.8;
+                pidMode = true;
             }
             if (gamepad2.x)
             {
                 target = 290;
+                pidMode = true;
             }
 
             if (gamepad2.dpad_up)
@@ -142,36 +150,78 @@ public class DeepArmPidPotTuner extends LinearOpMode {
             }
 
             // Check for valid target range 900mV to 3.0V (multiplied by 1000)
-            if (target < 150)
+            if (target < 50)
             {
-                target = 150;
+                target = 50;
             }
             if (target > 300)
             {
                 target = 300;
             }
 
-            controller.setPID(p, i, d);
             double armPos = potentiometer.getVoltage() * 100;
-            double pid = controller.calculate(armPos, target);
-            double ff = Math.cos(Math.toRadians(target / volts_in_degree)) * f;
+            controllerPower = -gamepad2.left_stick_y;
 
-            double power = pid + ff;
-
-            // Scale max power down for testing
-            if(Math.abs(power) > powerCap)
-            {
-                power = Math.signum(power) * powerCap;
+            if (pidMode && power < 0.01 && Math.abs(target - armPos) < 3) {
+                pidMode = false;
+                holdMode = true;
+                startOfHold = true;
+            } else {
+                holdMode = false;
             }
 
-            // Check for limit switches
-            if (power < 0 && armBottomLimit.isPressed())
-            {
-                power = 0;
+            if (Math.abs(controllerPower) > 0.1) {
+                pidMode = false;
+                holdMode = false;
+                powerMode = true;
+            } else {
+                if (!pidMode) {
+                    holdMode = true;
+                }
+                powerMode = false;
             }
-            else if (power > 0 && armTopLimit.isPressed())
-            {
-                power = 0;
+
+            if (powerMode) {
+                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                armOther.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                power = controllerPower;
+                startOfHold = true;
+            } else if (holdMode) {
+                if (startOfHold) {
+                    holdEncoder = arm.getCurrentPosition();
+                    startOfHold = false;
+                }
+
+                arm.setTargetPosition(holdEncoder);
+                armOther.setTargetPosition(holdEncoder);
+                power = 0.6;
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armOther.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            } else if (pidMode) {
+                arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                armOther.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                controller.setPID(p, i, d);
+                double pid = controller.calculate(armPos, target);
+                double ff = Math.cos(Math.toRadians(target / volts_in_degree)) * f;
+
+                power = pid + ff;
+
+                // Scale max power down for testing
+                if(Math.abs(power) > powerCap)
+                {
+                    power = Math.signum(power) * powerCap;
+                }
+
+                // Check for limit switches
+                if (power < 0 && armBottomLimit.isPressed())
+                {
+                    power = 0;
+                }
+                else if (power > 0 && armTopLimit.isPressed())
+                {
+                    power = 0;
+                }
             }
 
             arm.setPower(power);
@@ -181,6 +231,10 @@ public class DeepArmPidPotTuner extends LinearOpMode {
             telemetryAll.addData("power", power);
             telemetryAll.addData("target", target);
             telemetryAll.addData("encpos", arm.getCurrentPosition());
+            telemetryAll.addData("enctarget", holdEncoder);
+            telemetryAll.addData("hold mode: ", holdMode);
+            telemetryAll.addData("pid mode: ", pidMode);
+            telemetryAll.addData("power mode: ", powerMode);
             telemetryAll.update();
         }
     }

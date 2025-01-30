@@ -440,6 +440,8 @@ public class deepdive_drive_imu extends LinearOpMode
             armOther.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
+
+
         if (gamepad1.y)
         {
             armScale = 1;
@@ -484,7 +486,7 @@ public class deepdive_drive_imu extends LinearOpMode
                     armPower *= 0.5;
                     if (gamepad2.left_bumper)
                     {
-                        armPower *= .1;
+                        armPower *= 0.1;
                     }
                 }
             }
