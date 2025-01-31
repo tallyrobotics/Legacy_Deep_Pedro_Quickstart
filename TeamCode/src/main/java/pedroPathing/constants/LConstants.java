@@ -13,7 +13,10 @@ public class LConstants {
         OTOSConstants.hardwareMapName = "otos";
         OTOSConstants.linearUnit = DistanceUnit.INCH;
         OTOSConstants.angleUnit = AngleUnit.RADIANS;
-        OTOSConstants.offset = new SparkFunOTOS.Pose2D(-1.87, 0.0, (3*Math.PI)/2);
+        OTOSConstants.offset = new SparkFunOTOS.Pose2D(-1.87, 0.0, Math.toRadians(270.0));
+        // Minimum and Maximum scalar values for the linear and angular scalars (from OTOS lib code)
+        // MIN_SCALAR = 0.872;
+        // MAX_SCALAR = 1.127;
         OTOSConstants.linearScalar = 0.9819;
         OTOSConstants.angularScalar = 0.9762;
     }
