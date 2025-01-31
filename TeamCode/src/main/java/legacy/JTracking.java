@@ -71,14 +71,6 @@ public class JTracking {
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
-        // tinybot
-//        otos.setLinearScalar(1.11);
-//        otos.setAngularScalar(0.9675/*1.0*/);
-
-        // regular bot
-        otos.setLinearScalar(1.1487); //0.99856
-        otos.setAngularScalar(1.000); //0.9798
-
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.DEGREES);
 
@@ -86,12 +78,22 @@ public class JTracking {
 //        otos.setOffset(new SparkFunOTOS.Pose2D(0, 0, 0));
 
         // regular bot
-        otos.setOffset(new SparkFunOTOS.Pose2D(-1.87, -0.2, 270));
+        otos.setOffset(new SparkFunOTOS.Pose2D(-1.87, 0, 270));
+
+        // tinybot
+//        otos.setLinearScalar(1.11);
+//        otos.setAngularScalar(0.9675/*1.0*/);
+
+        // regular bot
+        otos.setLinearScalar(1.1787545); //0.99856
+        otos.setAngularScalar(1.000); //0.9798
 
         // initialization
+        otos.calibrateImu();
         otos.resetTracking();
 
         telemetryAll = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetryAll.addData("Scalar", otos.getLinearScalar());
         telemetryAll.addData("Status", "Initialized");
         telemetryAll.update();
     }

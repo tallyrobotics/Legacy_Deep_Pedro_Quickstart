@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -11,6 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class JTLeftAuto3Samp extends LinearOpMode {
 
     private Servo elbowClaw;
+    private DcMotor wrist;
+
     private JTracking tracker;
     private JArm armPID;
     private SparkFunOTOS.Pose2D pose;
@@ -27,7 +30,10 @@ public class JTLeftAuto3Samp extends LinearOpMode {
     @Override
     public void runOpMode() {
         elbowClaw = hardwareMap.get(Servo.class, "elbowClaw");
+        wrist = hardwareMap.get(DcMotor.class, "wrist");
+
         elbowClaw.scaleRange(0.51, 1);
+        wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         tracker = new JTracking(this, hardwareMap);
         armPID = new JArm(this, hardwareMap);
@@ -37,7 +43,7 @@ public class JTLeftAuto3Samp extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
+        armPID.start();
         while (opModeIsActive()) {
             // ROB: moves to chamber
             elbowClaw.setPosition(1);
@@ -56,9 +62,9 @@ public class JTLeftAuto3Samp extends LinearOpMode {
             /**************************************************************************************/
 
             // ROB: moves to SAMP 1
-            tracker.moveTo(sampleX-24, specimenInitPlaceY, 0, 1, 0.5, 1.0);
+            tracker.moveTo(specimenPlaceX-6, specimenInitPlaceY, 0, 1, 0.5, 1.0);
             armPID.setTarget(JArm.specimenGrab);
-            tracker.moveTo(sampleX-24, 36, 0, 1, 0.5, 1.0);
+            tracker.moveTo(specimenPlaceX-6, 36, 0, 1, 0.5, 1.0);
             tracker.moveTo(sampleX, 34, 0, 1, 0.5, 1.0);
             tracker.moveTo(sampleX, 46, 0, 1, 0.5,1.0);
 

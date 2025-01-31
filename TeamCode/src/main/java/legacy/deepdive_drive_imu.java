@@ -478,15 +478,15 @@ public class deepdive_drive_imu extends LinearOpMode
         if (armStickApplied)
         {
             armPower *= armScale;
-            if (armPower < 0 && potValue < 2.3)
-            {
-                armPower *= 0.06;
-                if (wristTargetPosition < -180)
-                {
-                    armPower *= 0.5;
-                    if (gamepad2.left_bumper)
-                    {
-                        armPower *= 0.1;
+
+            if (!gamepad1.y) {
+                if (armPower < 0 && potValue < 2.3) {
+                    armPower *= 0.06;
+                    if (wristTargetPosition < -180) {
+                        armPower *= 0.5;
+                        if (gamepad2.left_bumper) {
+                            armPower *= 0.1;
+                        }
                     }
                 }
             }
@@ -500,6 +500,7 @@ public class deepdive_drive_imu extends LinearOpMode
         {
             armPower = 0;
         }
+
         arm.setPower(armPower);
         armOther.setPower(armPower);
 
@@ -642,6 +643,10 @@ public class deepdive_drive_imu extends LinearOpMode
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", JavaUtil.formatNumber(leftFrontPower, 4, 2) + ", " + JavaUtil.formatNumber(rightFrontPower, 4, 2));
         telemetry.addData("Back  left/Right", JavaUtil.formatNumber(leftBackPower, 4, 2) + ", " + JavaUtil.formatNumber(rightBackPower, 4, 2));
+//        telemetry.addData("hold mode: ", DeepArmPidPotTuner.holdMode);
+//        telemetry.addData("pid mode: ", DeepArmPidPotTuner.pidMode);
+//        telemetry.addData("power mode: ", DeepArmPidPotTuner.powerMode);
+
 
         prevHeading = heading;
     }

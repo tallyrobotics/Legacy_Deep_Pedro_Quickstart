@@ -64,9 +64,9 @@ public class DeepArmPidPotTuner extends LinearOpMode {
     private boolean dDown = false;
 
     private int correctCount = 0;
-    private boolean powerMode = false;
-    private boolean pidMode = false;
-    private boolean holdMode = true;
+    public static boolean powerMode = false;
+    public static boolean pidMode = false;
+    public static boolean holdMode = true;
     private boolean startOfHold = true;
 
     private double controllerPower = 0;

@@ -4,12 +4,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @Autonomous (group = "Auto JTracking")
 public class JTRightAuto3Spec extends LinearOpMode {
     private Servo elbowClaw;
+    private DcMotor wrist;
+
     private JTracking tracker;
     private JArm armPID;
     private SparkFunOTOS.Pose2D pose;
@@ -27,7 +30,10 @@ public class JTRightAuto3Spec extends LinearOpMode {
     @Override
     public void runOpMode() {
         elbowClaw = hardwareMap.get(Servo.class, "elbowClaw");
+        wrist = hardwareMap.get(DcMotor.class, "wrist");
+
         elbowClaw.scaleRange(0.51, 1);
+        wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         tracker = new JTracking(this, hardwareMap);
         armPID = new JArm(this, hardwareMap);
