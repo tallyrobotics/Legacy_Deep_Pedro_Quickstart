@@ -22,6 +22,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -42,6 +43,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
  */
 @TeleOp
 @Config
+@Disabled
 public class DeepArmPidPotTuner extends LinearOpMode {
 
     private PIDController controller;

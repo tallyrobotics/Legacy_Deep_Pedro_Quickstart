@@ -4,36 +4,31 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @Autonomous (group = "Auto JTracking")
 public class JTRightAuto3Spec extends LinearOpMode {
-    private Servo elbowClaw;
-    private DcMotor wrist;
+    private Servo specClaw;
 
     private JTracking tracker;
     private JArm armPID;
     private SparkFunOTOS.Pose2D pose;
 
     // constants (for readability)
-    final SparkFunOTOS.Pose2D specimenGrabPose = new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, -58.75, -90);
+    final SparkFunOTOS.Pose2D specGrabPose = new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, -57.25, -90);
 
-    final double specimenPlaceX = 32.5;
-    final double specimenInitPlaceY = -6;
-    final double specimenPlaceYOffset = 3;
+    final double specPlaceX = 32.5;
+    final double specInitPlaceY = -8;
+    final double specDisplaceY = 3.5;
 
-    final double sampleX = 58;
-
+    final double sampX = 58;
 
     @Override
     public void runOpMode() {
-        elbowClaw = hardwareMap.get(Servo.class, "elbowClaw");
-        wrist = hardwareMap.get(DcMotor.class, "wrist");
+        specClaw = hardwareMap.get(Servo.class, "elbowClaw");
 
-        elbowClaw.scaleRange(0.51, 1);
-        wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        specClaw.scaleRange(0, 1);
 
         tracker = new JTracking(this, hardwareMap);
         armPID = new JArm(this, hardwareMap);
@@ -46,114 +41,114 @@ public class JTRightAuto3Spec extends LinearOpMode {
         armPID.start();
         while (opModeIsActive()) {
             // ROB: moves to chamber
-            elbowClaw.setPosition(1);
+            specClaw.setPosition(0);
             armPID.setTarget(JArm.specimenPlace);
-            sleep(1050);
-            tracker.moveTo(specimenPlaceX, specimenInitPlaceY, 0, 0.1, 0.5, 0.6);
-            elbowClaw.setPosition(1);
+            sleep(1000);
+            tracker.moveTo(specPlaceX, specInitPlaceY, 0, 1, 0.5, 0.8);
+            specClaw.setPosition(0);
 
             // ROB: clips SPEC PRLD
-            tracker.setMotorsMecanum(0.4, 0, 0);
-            sleep(800);
+            tracker.setMotorsMecanum(0.8, 0, 0);
+            sleep(400);
             tracker.stopMotors();
-            elbowClaw.setPosition(0);
-            sleep(150);
-            armPID.setTarget(JArm.specimenPlace - 20);
+            specClaw.setPosition(1);
             sleep(200);
-
 
             /**************************************************************************************/
 
             // ROB: moves to SAMP 1
-            tracker.moveTo(specimenPlaceX-6, specimenInitPlaceY, 0, 1, 0.5, 1.0);
+            tracker.moveTo(specPlaceX-4, specInitPlaceY, 0, 3, 0.5, 1.0);
             armPID.setTarget(JArm.specimenGrab);
-            tracker.moveTo(specimenPlaceX-6, -36, 0, 1, 0.5, 1.0);
-            tracker.moveTo(sampleX, -36, 0, 1, 0.5, 1.0);
-            tracker.moveTo(sampleX, -45, 0, 1, 0.5,1.0);
+            tracker.moveTo(specPlaceX-4, -36, 0, 3, 0.5, 1.0);
+            tracker.moveTo(sampX, -36, 0, 3, 0.5, 1.0);
+            tracker.moveTo(sampX, -46, 0, 1, 0.5,1.0);
 
             // ROB: pushes SAMP 1 to O-ZONE
-            tracker.moveTo(18, -45, 0, 1, 0.5,1.0);
+            tracker.moveTo(18, -46, 0, 3, 0.5,1.0);
 
             // HP: SAMP 1 --> SPEC 1
-            tracker.moveTo(sampleX, -45, 0, 1, 0.5,1.0);
-            tracker.moveTo(sampleX, -59, 0, 1, 0.5,1.0);
+            tracker.moveTo(sampX, -46, 0, 3, 0.5,1.0);
+            tracker.moveTo(sampX, -56, 0, 1, 0.5,1.0);
 
             // ROB: pushes SAMP 2 to O-ZONE
-            tracker.moveTo(18, -59, 0, 1, 0.5,1.0);
+            tracker.moveTo(18, -56, 0, 3, 0.5,1.0);
 
             // HP: SAMP 2 --> SPEC 2
-            tracker.moveTo(24, -36, -90, 1, 0.5, 0.6);
+            tracker.moveTo(24, -36, -90, 3, 0.5, 0.8);
 
             // ROB: squares with back wall
             // HP: Aligns SPEC 1
-            tracker.setMotorsMecanum(0, 0.5, 0);
-            sleep(1300);
+            tracker.setMotorsMecanum(0.1, 0.6, 0);
+            sleep(1100);
             tracker.stopMotors();
             pose = tracker.getPosition();
             tracker.setPosition(new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, pose.y, -90));
 
             // ROB: grabs SPEC 1
-            tracker.moveToPose(specimenGrabPose, 0.1, 0.5, 0.6);
-            elbowClaw.setPosition(1);
-            sleep(500);
+            tracker.moveToPose(specGrabPose, 0.5, 0.5, 0.5);
+            specClaw.setPosition(0);
+            sleep(400);
 
             // ROB: backs away
-            tracker.moveTo(JTracking.robotWidth/2, -42, -90, 1, 0.5, 0.9);
+            armPID.setTarget(JArm.specimenGrab + 10);
+            tracker.moveTo(JTracking.robotWidth/2, -42, -90, 1, 0.5, 1.0);
 
             /**************************************************************************************/
 
             // ROB: moves to chamber
             // HP: aligns SPEC 2
             armPID.setTarget(JArm.specimenPlace);
-            tracker.moveTo(specimenPlaceX-6, specimenInitPlaceY + specimenPlaceYOffset, 0, 1, 0.5, 0.9);
-            tracker.moveTo(specimenPlaceX, specimenInitPlaceY + specimenPlaceYOffset, 0, 0.1, 0.5, 0.6);
+            tracker.moveTo(specPlaceX-4, specInitPlaceY + specDisplaceY, 0, 1, 0.5, 1.0);
+            tracker.moveTo(specPlaceX, specInitPlaceY + specDisplaceY, 0, 1, 0.5, 0.8);
 
             // ROB: clips SPEC 1
-            tracker.setMotorsMecanum(0.4, 0, 0);
-            sleep(800);
+            tracker.setMotorsMecanum(0.8, 0, 0);
+            sleep(400);
             tracker.stopMotors();
-            elbowClaw.setPosition(0);
+            specClaw.setPosition(1);
             sleep(200);
 
             /**************************************************************************************/
 
             // ROB: moves to prepare for squaring
-            tracker.moveTo(22, specimenInitPlaceY + specimenPlaceYOffset, 0, 1, 0.5, 0.7);
+            tracker.moveTo(22, specInitPlaceY + specDisplaceY, 0, 3, 0.5, 1.0);
             armPID.setTarget(JArm.specimenGrab);
-            tracker.moveTo(12, -12, -90, 1, 0.5, 0.9);
+            tracker.moveTo(12, -12, -90, 3, 0.5, 1.0);
 
             // ROB: squares with back wall
-            tracker.setMotorsMecanum(0.5, 0.5, 0);
-            sleep(1000);
+            tracker.setMotorsMecanum(0.8, 0.6, 0);
+            sleep(900);
             tracker.stopMotors();
             pose = tracker.getPosition();
             tracker.setPosition(new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, pose.y, -90));
 
             // ROB: grabs SPEC 2
-            tracker.moveToPose(specimenGrabPose, 0.1, 0.5, 0.6);
-            elbowClaw.setPosition(1);
-            sleep(500);
+            tracker.moveToPose(specGrabPose, 0.5, 0.5, 0.5);
+            specClaw.setPosition(0);
+            sleep(400);
             // back away
-            tracker.moveTo(JTracking.robotWidth/2, -42, -90, 1, 0.5, 0.9);
+            armPID.setTarget(JArm.specimenGrab + 10);
+            tracker.moveTo(JTracking.robotWidth/2, -42, -90, 1, 0.5, 1.0);
 
             /**************************************************************************************/
 
             // ROB: moves to chamber
             armPID.setTarget(JArm.specimenPlace);
-            tracker.moveTo(specimenPlaceX-6, specimenInitPlaceY + specimenPlaceYOffset*2, 0, 1, 0.5, 0.9);
-            tracker.moveTo(specimenPlaceX, specimenInitPlaceY + specimenPlaceYOffset*2, 0, 0.1, 0.5, 0.6);
+            tracker.moveTo(specPlaceX-4, specInitPlaceY + specDisplaceY*2, 0, 1, 0.5, 1.0);
+            tracker.moveTo(specPlaceX, specInitPlaceY + specDisplaceY *2, 0, 1, 0.5, 0.8);
 
             // ROB: clips SPEC 2
-            tracker.setMotorsMecanum(0.4, 0, 0);
-            sleep(1000);
+            tracker.setMotorsMecanum(0.8, 0, 0);
+            sleep(400);
             tracker.stopMotors();
-            elbowClaw.setPosition(0);
+            specClaw.setPosition(1);
             sleep(200);
 
             /**************************************************************************************/
 
             // ROB: parks in O-ZONE
-            tracker.moveTo(12, -42, 0, 1, 0.5, 0.9);
+            armPID.setTarget(JArm.specimenPlace-12);
+            tracker.moveTo(12, -42, 0, 1, 0.5, 1.0);
 
             while (opModeIsActive()) {
                 sleep(1000);

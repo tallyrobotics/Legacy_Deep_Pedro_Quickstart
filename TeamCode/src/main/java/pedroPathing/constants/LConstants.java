@@ -17,8 +17,8 @@ public class LConstants {
         // Minimum and Maximum scalar values for the linear and angular scalars (from OTOS lib code)
         // MIN_SCALAR = 0.872;
         // MAX_SCALAR = 1.127;
-        OTOSConstants.linearScalar = 0.9819;
-        OTOSConstants.angularScalar = 0.9762;
+        OTOSConstants.linearScalar = 1.0118583;
+        OTOSConstants.angularScalar = 1.0;
     }
 }
 

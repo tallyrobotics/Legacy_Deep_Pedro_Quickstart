@@ -39,15 +39,15 @@ public class JTracking {
 //    final double posErrorTolerance = 0.05;
 //    final double headingErrorTolerance = 0.5;
 
-    final double position_p = 0.08;
-    final double position_d = 0.16;
+    final double position_p = 0.10;
+    final double position_d = 0.20;
 
     final double heading_p = 0.06;
     final double heading_d = 0.08;
 
     // we add minimum powers to prevent it from halting and never reaching the target.
-    // at 0.1 movement power, it can pretty much stop as soon as it wants to.
-    final double minPower = 0.11;
+    // at 0.05 movement power, it can pretty much stop as soon as it wants to.
+    final double minPower = 0.05;
 
     final double maxYaw = 0.60;
     final double minYaw = 0.00;
@@ -78,14 +78,14 @@ public class JTracking {
 //        otos.setOffset(new SparkFunOTOS.Pose2D(0, 0, 0));
 
         // regular bot
-        otos.setOffset(new SparkFunOTOS.Pose2D(-1.87, 0, 270));
+        otos.setOffset(new SparkFunOTOS.Pose2D(-1.375, 0, 270));
 
         // tinybot
 //        otos.setLinearScalar(1.11);
 //        otos.setAngularScalar(0.9675/*1.0*/);
 
         // regular bot
-        otos.setLinearScalar(1.1787545); //0.99856
+        otos.setLinearScalar(1.0118583); //0.99856
         otos.setAngularScalar(1.000); //0.9798
 
         // initialization
@@ -231,8 +231,8 @@ public class JTracking {
                 haltTimer = 0;
             }
 
-            // if we have halted for over 30 cycles
-            if (haltTimer > 30) {
+            // if we have halted for over 120 cycles
+            if (haltTimer > 120) {
                 telemetryAll.addLine("exited from halt");
                 telemetryAll.update();
                 // exit from movement

@@ -18,9 +18,9 @@ public class JArm extends Thread {
     private Telemetry telemetryAll;
 
     private PIDController controller;
-    public static double p = 0.0085, i = 0, d = 0.00010;
+    public static double p = 0.011, i = 0, d = 0.00012;
     public static double f = 0.005;
-    public static double powerCap = 0.75;
+    public static double powerCap = 0.80;
 
     private final double volts_in_degree = 1.22;
 
@@ -32,9 +32,10 @@ public class JArm extends Thread {
 
     private volatile double targetPot = 100;
 
-    static double specimenPlace = 187.4;
-    static double specimenGrab = 119.2;
+    static double specimenPlace = 174.4;
+    static double specimenGrab = 107.5;
     static double basketPlace = 290.8;
+    static double groundGrab = 124.2;
     static double parkingHeight = 200.0;
 
     public JArm(LinearOpMode initOpMode, HardwareMap initHardwareMap) {
@@ -45,8 +46,8 @@ public class JArm extends Thread {
         arm1 = hardwareMap.get(DcMotor.class, "arm");
         arm2 = hardwareMap.get(DcMotor.class, "armOther");
         pot = hardwareMap.get(AnalogInput.class, "pot");
-        armTopLimit = hardwareMap.get(TouchSensor.class, "armTopLimit");
-        armBottomLimit = hardwareMap.get(TouchSensor.class, "armBottomLimit");
+        armTopLimit = hardwareMap.get(TouchSensor.class, "armTopStop");
+        armBottomLimit = hardwareMap.get(TouchSensor.class, "armBottomStop");
 
         arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -97,7 +98,7 @@ public class JArm extends Thread {
 
                 arm1.setTargetPosition(holdEncoder);
                 arm2.setTargetPosition(holdEncoder);
-                power = 0.5;
+                power = 0.85;
                 arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 arm2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

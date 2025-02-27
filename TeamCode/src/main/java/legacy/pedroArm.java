@@ -21,7 +21,7 @@ public class pedroArm //extends Thread
     private Telemetry telemetryAll;
 
     private PIDController controller;
-    public static double p = 0.0085, i = 0, d = 0.00010;
+    public static double p = 0.011, i = 0, d = 0.00012;
     public static double f = 0.005;
     public static double powerCap = 1.0;
 
@@ -35,8 +35,8 @@ public class pedroArm //extends Thread
 
     private volatile double targetPot = 100;
 
-    static double specimenPlace = 187.4;
-    static double specimenGrab = 119.2;
+    static double specimenPlace = 178.5;
+    static double specimenGrab = 107.9;
     static double basketPlace = 290.8;
     static double parkingHeight = 200.0;
 
@@ -49,8 +49,8 @@ public class pedroArm //extends Thread
         arm1 = hardwareMap.get(DcMotor.class, "arm");
         arm2 = hardwareMap.get(DcMotor.class, "armOther");
         pot = hardwareMap.get(AnalogInput.class, "pot");
-        armTopLimit = hardwareMap.get(TouchSensor.class, "armTopLimit");
-        armBottomLimit = hardwareMap.get(TouchSensor.class, "armBottomLimit");
+        armTopLimit = hardwareMap.get(TouchSensor.class, "armTopStop");
+        armBottomLimit = hardwareMap.get(TouchSensor.class, "armBottomStop");
 
         arm1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

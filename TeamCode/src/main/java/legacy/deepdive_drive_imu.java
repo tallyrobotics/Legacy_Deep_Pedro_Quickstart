@@ -71,7 +71,7 @@ public class deepdive_drive_imu extends LinearOpMode
     boolean presetWrist = false;
     int fieldCentric;
     boolean toggleClaw;
-    int clawPosition = 1;
+    int clawPosition = 0;
 
     double armPower = 0;
     boolean armStickApplied = true;
@@ -100,9 +100,9 @@ public class deepdive_drive_imu extends LinearOpMode
         extender = hardwareMap.get(CRServo.class, "extender");
         pot = hardwareMap.get(AnalogInput.class, "pot");
         imu = hardwareMap.get(IMU.class, "imu");
-        armTopLimit = hardwareMap.get(TouchSensor.class, "armTopLimit");
-        armBottomLimit = hardwareMap.get(TouchSensor.class, "armBottomLimit");
-        specClaw.scaleRange(0.51, 1);
+        armTopLimit = hardwareMap.get(TouchSensor.class, "armTopStop");
+        armBottomLimit = hardwareMap.get(TouchSensor.class, "armBottomStop");
+        specClaw.scaleRange(0, 1);
 //        telemetry.setNumDecimalPlaces(0,3);
 //
 //
@@ -112,8 +112,6 @@ public class deepdive_drive_imu extends LinearOpMode
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
-
-        wrist.setDirection(DcMotor.Direction.REVERSE);
 
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -323,31 +321,15 @@ public class deepdive_drive_imu extends LinearOpMode
 
         if (gamepad2.y)
         {
-            if (rotatorScaled > 0.02)
-            {
-                rotatorScaled -= .02;
-                rotator.scaleRange(0.0, rotatorScaled);
-                rotator.setPosition(1);
-            }
-            else
-            {
-                rotator.setPosition(0);
-            }
+            rotatorScaled = Math.max(0.25, rotatorScaled - 0.04);
+            rotator.scaleRange(0.0, rotatorScaled);
         }
         else if (gamepad2.b)
         {
-            if (rotatorScaled < 1)
-            {
-                rotatorScaled += .02;
-                rotator.scaleRange(0.0, rotatorScaled);
-                rotator.setPosition(1);
-            }
-            else
-            {
-                rotator.scaleRange(0.0, 1.0);
-                rotator.setPosition(1);
-            }
+            rotatorScaled = Math.min(0.75, rotatorScaled + 0.04);
+            rotator.scaleRange(0.0, rotatorScaled);
         }
+        rotator.setPosition(1);
 
         extender.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
 
@@ -368,7 +350,7 @@ public class deepdive_drive_imu extends LinearOpMode
 //    }
 
         specClaw.setPosition(clawPosition);
-        sampClaw.setPosition(1 - clawPosition);
+        sampClaw.setPosition(clawPosition);
 
         wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -481,7 +463,7 @@ public class deepdive_drive_imu extends LinearOpMode
 
             if (!gamepad1.y) {
                 if (armPower < 0 && potValue < 2.3) {
-                    armPower *= 0.06;
+                    armPower *= 0.08;
                     if (wristTargetPosition < -180) {
                         armPower *= 0.5;
                         if (gamepad2.left_bumper) {
@@ -643,7 +625,8 @@ public class deepdive_drive_imu extends LinearOpMode
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", JavaUtil.formatNumber(leftFrontPower, 4, 2) + ", " + JavaUtil.formatNumber(rightFrontPower, 4, 2));
         telemetry.addData("Back  left/Right", JavaUtil.formatNumber(leftBackPower, 4, 2) + ", " + JavaUtil.formatNumber(rightBackPower, 4, 2));
-//        telemetry.addData("hold mode: ", DeepArmPidPotTuner.holdMode);
+        telemetry.addData("Claw Position", clawPosition);
+        //        telemetry.addData("hold mode: ", DeepArmPidPotTuner.holdMode);
 //        telemetry.addData("pid mode: ", DeepArmPidPotTuner.pidMode);
 //        telemetry.addData("power mode: ", DeepArmPidPotTuner.powerMode);
 

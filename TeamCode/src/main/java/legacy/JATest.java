@@ -2,10 +2,12 @@ package legacy;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Config
 @Autonomous(group = "Auto JTracking")
+//@Disabled
 public class JATest extends LinearOpMode {
     JArm armPID;
 boolean test = true;

@@ -3,11 +3,13 @@ package legacy;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @Autonomous (group = "Auto JTracking")
+//@Disabled
 public class JTTest extends LinearOpMode {
     private Servo elbowClaw;
     private JTracking tracker;
@@ -31,7 +33,7 @@ public class JTTest extends LinearOpMode {
         while (opModeIsActive()) {
             // ROB: moves to chamber
             elbowClaw.setPosition(1);
-            tracker.moveTo(48*48/51.5, 0, 0, 0.1, 0.5, 0.6);
+            tracker.moveTo(48, 0, 0, 0.1, 0.5, 0.6);
 
 
             while (opModeIsActive()) {

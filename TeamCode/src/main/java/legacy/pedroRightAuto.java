@@ -12,6 +12,7 @@ import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -32,6 +33,7 @@ import pedroPathing.constants.LConstants;
  */
 
 @Autonomous(name = "pedroRightAuto", group = "Testing")
+//@Disabled
 public class pedroRightAuto extends OpMode
 {
     private final int ECLAW_OPEN = 0;
@@ -70,9 +72,9 @@ public class pedroRightAuto extends OpMode
      */
     private final Pose startPose = new Pose(10, 57, Math.toRadians(0));
     /**
-     * Park Pose for our robot, after we do all of the scoring.
+     * Specimen Place Pose; change X component to place Specimen on different parts of High Chamber
      */
-    private final Pose parkPose = new Pose(35, 63, Math.toRadians(0));
+    private final Pose firstSpecPose = new Pose(38, 63, Math.toRadians(0));
 
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload, park;
@@ -101,12 +103,14 @@ public class pedroRightAuto extends OpMode
          * Here is a explanation of the difference between Paths and PathChains <https://pedropathing.com/commonissues/pathtopathchain.html> */
 
         /* This is our scorePreload path. We are using a BezierLine, which is a straight line. */
-        scorePreload = new Path(new BezierLine(new Point(startPose), new Point(parkPose)));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading());
+
+
+        scorePreload = new Path(new BezierLine(new Point(startPose), new Point(firstSpecPose)));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), firstSpecPose.getHeading());
 
         scorePreload1 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(startPose), new Point(parkPose)))
-                .setLinearHeadingInterpolation(startPose.getHeading(), parkPose.getHeading())
+                .addPath(new BezierLine(new Point(startPose), new Point(firstSpecPose)))
+                .setLinearHeadingInterpolation(startPose.getHeading(), firstSpecPose.getHeading())
 //                .setZeroPowerAccelerationMultiplier(2.0)
                 .addParametricCallback(0.99, () -> {elbowClaw.setPosition(ECLAW_OPEN);})
                 .build();
@@ -206,8 +210,8 @@ public class pedroRightAuto extends OpMode
 //        /* This is our park path. We are using a BezierCurve with 3 points, which is a curved line that is curved based off of the control point */
 //        park = new Path(new BezierCurve(new Point(scorePose), /* Control Point */ new Point(parkControlPose), new Point(parkPose)));
 //        park.setLinearHeadingInterpolation(scorePose.getHeading(), parkPose.getHeading());
-        park = new Path(new BezierLine(new Point(parkPose), new Point(startPose)));
-        park.setLinearHeadingInterpolation(parkPose.getHeading(), startPose.getHeading());
+        park = new Path(new BezierLine(new Point(firstSpecPose), new Point(startPose)));
+        park.setLinearHeadingInterpolation(firstSpecPose.getHeading(), startPose.getHeading());
     }
 
     /**
@@ -386,10 +390,11 @@ public class pedroRightAuto extends OpMode
         wrist.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         elbowClaw = hardwareMap.get(Servo.class, "elbowClaw");
-        elbowClaw.scaleRange(0.6, 1.0);
+        elbowClaw.scaleRange(0, 1.0);
         elbowClaw.setPosition(ECLAW_CLOSED);
 
         armPID = new pedroArm(this, hardwareMap);
+
     }
 
     /**
