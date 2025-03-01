@@ -110,10 +110,10 @@ public class JTLeftAuto3HBasket extends LinearOpMode {
             /**************************************************************************************/
 
             // ROB: parks in A-ZONE
-            armPID.setTarget(JArm.parkingHeight);
+            armPID.setTarget(JArm.parkingHeight + 5);
             tracker.moveTo(56, 48, -90, 2, 0.5,0.9); // Robot moves itself to ascent zone
             tracker.moveTo(56, 25, -90, 0.5, 0.5, 0.9); // Robot moves forward into the low bar
-            armPID.setTarget(JArm.parkingHeight - 0.1);
+            armPID.setTarget(JArm.parkingHeight - 5);
 
             while (opModeIsActive()) {
                 sleep(1000);
