@@ -22,7 +22,7 @@ public class JTRightAuto3Spec extends LinearOpMode {
     final double specInitPlaceY = -8;
     final double specDisplaceY = 3.5;
 
-    final double sampX = 58;
+    final double sampPushX = 58;
 
     @Override
     public void runOpMode() {
@@ -60,15 +60,15 @@ public class JTRightAuto3Spec extends LinearOpMode {
             tracker.moveTo(specPlaceX-4, specInitPlaceY, 0, 3, 0.5, 1.0);
             armPID.setTarget(JArm.specimenGrab);
             tracker.moveTo(specPlaceX-4, -36, 0, 3, 0.5, 1.0);
-            tracker.moveTo(sampX, -36, 0, 3, 0.5, 1.0);
-            tracker.moveTo(sampX, -46, 0, 1, 0.5,1.0);
+            tracker.moveTo(sampPushX, -36, 0, 3, 0.5, 1.0);
+            tracker.moveTo(sampPushX, -46, 0, 1, 0.5,1.0);
 
             // ROB: pushes SAMP 1 to O-ZONE
             tracker.moveTo(18, -46, 0, 3, 0.5,1.0);
 
             // HP: SAMP 1 --> SPEC 1
-            tracker.moveTo(sampX, -46, 0, 3, 0.5,1.0);
-            tracker.moveTo(sampX, -56, 0, 1, 0.5,1.0);
+            tracker.moveTo(sampPushX, -46, 0, 3, 0.5,1.0);
+            tracker.moveTo(sampPushX, -56, 0, 1, 0.5,1.0);
 
             // ROB: pushes SAMP 2 to O-ZONE
             tracker.moveTo(18, -56, 0, 3, 0.5,1.0);

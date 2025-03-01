@@ -35,7 +35,7 @@ public class JArm extends Thread {
     static double specimenPlace = 174.4;
     static double specimenGrab = 107.5;
     static double basketPlace = 290.8;
-    static double groundGrab = 124.2;
+    static double basketGrab = 124.2;
     static double parkingHeight = 200.0;
 
     public JArm(LinearOpMode initOpMode, HardwareMap initHardwareMap) {
