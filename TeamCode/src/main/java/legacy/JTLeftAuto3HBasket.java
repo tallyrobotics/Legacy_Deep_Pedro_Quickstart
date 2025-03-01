@@ -22,8 +22,7 @@ public class JTLeftAuto3HBasket extends LinearOpMode {
     private SparkFunOTOS.Pose2D pose;
 
     // constants (for readability)
-    final double sampDropX = 18;
-    final double sampDropY = 40;
+    SparkFunOTOS.Pose2D sampDropPose = new SparkFunOTOS.Pose2D(18, 30, 135);
 
     final double armGrabLDist = 30;
 
@@ -55,13 +54,14 @@ public class JTLeftAuto3HBasket extends LinearOpMode {
         waitForStart();
         armPID.start();
         while (opModeIsActive()) {
+
             // ROB: moves to basket 
             sampClaw.setPosition(0);
             armPID.setTarget(JArm.basketPlace);
             wrist.setTarget(wristOutEnc);
             extender.setPower(-1);
             sleep(3100);
-            tracker.moveTo(sampDropX, sampDropY, 135, 1, 0.5, 0.7);
+            tracker.moveToPose(sampDropPose, 1, 0.5, 0.7);
             sampClaw.setPosition(0);
 
             // ROB: drops SAMP PRLD
@@ -80,7 +80,7 @@ public class JTLeftAuto3HBasket extends LinearOpMode {
 
             // ROB: moves to basket 
             armPID.setTarget(JArm.basketPlace);
-            tracker.moveTo(sampDropX, sampDropY, 135, 1, 0.5, 0.7);
+            tracker.moveToPose(sampDropPose, 1, 0.5, 0.7);
             sampClaw.setPosition(0);
 
             // ROB: drops SAMP 1
@@ -100,7 +100,7 @@ public class JTLeftAuto3HBasket extends LinearOpMode {
 
             // ROB: moves to basket 
             armPID.setTarget(JArm.basketPlace);
-            tracker.moveTo(sampDropX, sampDropY, 135, 1, 0.5, 0.7);
+            tracker.moveToPose(sampDropPose, 1, 0.5, 0.7);
             sampClaw.setPosition(0);
 
             // ROB: drops SAMP 2

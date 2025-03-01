@@ -16,7 +16,7 @@ public class JTRightAuto3Spec extends LinearOpMode {
     private SparkFunOTOS.Pose2D pose;
 
     // constants (for readability)
-    final SparkFunOTOS.Pose2D specGrabPose = new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, -57.25, -90);
+    final SparkFunOTOS.Pose2D specGrabPose = new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, -57.75, -90);
 
     final double specPlaceX = 32.5;
     final double specInitPlaceY = -8;

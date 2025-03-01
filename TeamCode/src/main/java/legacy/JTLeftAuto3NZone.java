@@ -19,12 +19,11 @@ public class JTLeftAuto3NZone extends LinearOpMode {
     private SparkFunOTOS.Pose2D pose;
 
     // constants (for readability)
-    final SparkFunOTOS.Pose2D specimenGrabPose = new SparkFunOTOS.Pose2D(JTracking.robotWidth/2, -55, -90);
 
     final double specPlaceX = 32.5;
     final double specInitPlaceY = 8;
 
-    final double sampleX = 58;
+    final double sampPushX = 58;
 
     @Override
     public void runOpMode() {
@@ -61,31 +60,31 @@ public class JTLeftAuto3NZone extends LinearOpMode {
             /**************************************************************************************/
 
             // ROB: moves to SAMP 1
-            tracker.moveTo(specPlaceX-4, specInitPlaceY, 0, 3, 0.5, 1.0);
+            tracker.moveTo(specPlaceX-8, specInitPlaceY, 0, 1, 0.5, 1.0);
             armPID.setTarget(JArm.specimenGrab);
-            tracker.moveTo(specPlaceX-4, 36, 0, 3, 0.5, 1.0);
-            tracker.moveTo(sampleX, 34, 0, 3, 0.5, 1.0);
-            tracker.moveTo(sampleX, 46, 0, 1, 0.5,1.0);
+            tracker.moveTo(specPlaceX-8, 36, 0, 1, 0.5, 1.0);
+            tracker.moveTo(sampPushX, 36, 0, 1, 0.5, 1.0);
+            tracker.moveTo(sampPushX, 46, 0, 1, 0.5,1.0);
 
             /**************************************************************************************/
 
             // ROB: pushes SAMP 1 to N-ZONE
-            tracker.moveTo(18, 50, -7, 3, 0.5,1.0);
+            tracker.moveTo(18, 50, -7, 1, 0.5,1.0);
 
-            tracker.moveTo(sampleX, 46, 0, 3, 0.5,1.0);
-            tracker.moveTo(sampleX, 56, 0, 1, 0.5,1.0);
+            tracker.moveTo(sampPushX, 40, 0, 1, 0.5,1.0);
+            tracker.moveTo(sampPushX, 56, 0, 1, 0.5,1.0);
 
             /**************************************************************************************/
 
             // ROB: pushes SAMP 2 to N-ZONE
-            tracker.moveTo(18, 58, 0, 3, 0.5, 1.0);
-            tracker.moveTo(sampleX, 58, 0, 3, 0.5, 1.0);
-            tracker.moveTo(sampleX, 71-JTracking.robotWidth/2, 0, 1, 0.5, 1.0);
+            tracker.moveTo(18, 58, 0, 1, 0.5, 1.0);
+            tracker.moveTo(sampPushX, 52, 0, 1, 0.5, 1.0);
+            tracker.moveTo(sampPushX, 71-JTracking.robotWidth/2, 0, 1, 0.5, 1.0);
 
             /**************************************************************************************/
 
             // ROB: pushes SAMP 3 to N-ZONE
-            tracker.moveTo(18, 71-JTracking.robotWidth/2, 0, 3, 0.5, 1.0);
+            tracker.moveTo(18, 71-JTracking.robotWidth/2, 0, 1, 0.5, 1.0);
 
             /**************************************************************************************/
 
